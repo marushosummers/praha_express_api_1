@@ -17,9 +17,9 @@ app.get("/", function(req, res, next){
 
 app.post('/', function(req, res) {
     if (req.is('application/json')) {
-        res.send(req.body);
+        res.status(201).send(req.body);
     } else {
-    const err = new Error('Invalid Content-Type');
-    res.status(400).send({ error: err});
+    const error = new Error('Invalid Content-Type');
+    res.status(400).send({ error: error.message });
     }
 })

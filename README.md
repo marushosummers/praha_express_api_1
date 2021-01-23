@@ -1,6 +1,6 @@
 ## PrAha Challenge - node/express api
 
-## run
+## Run
 
 ```
 node app.js
