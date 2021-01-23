@@ -1,5 +1,11 @@
 ## PrAha Challenge - node/express api
 
+## run
+
+```
+node app.js
+```
+
 
 ## Example
 
