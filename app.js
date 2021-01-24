@@ -1,12 +1,24 @@
-var express = require("express");
-var app = express();
+const express = require("express");
 
-app.use(express.json());
-app.use(express.static('public'))
-
-var server = app.listen(8080, function(){
-    console.log("Listening PORT: " + server.address().port);
+const app_first = express();
+app_first.use(express.static('first-party', {
+    setHeaders: (res, path, stat) => {
+        res.cookie('first-paty', 'cookie');
+    },
+}));
+app_first.listen(8080, function(){
+    console.log("Listening PORT: 8080");
 });
 
-// TODO: first party cookieとthird party cookieの2つを設定する
-// third partyとなるサイトを仕込む必要がある
+const app_third = express();
+app_third.use(express.static('third-party', {
+    setHeaders: (res, path, stat) => {
+        res.cookie('third-paty', 'cookie', {
+            sameSite: 'none',
+            secure: true,
+        });
+    },
+}));
+app_third.listen(8081, function(){
+    console.log("Listening PORT: 8081");
+});
