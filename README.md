@@ -26,4 +26,4 @@ ngrok http 8081
 5. Check Developer-console > Application > Cookie
     
     - Domain: localhost `first-party=cookie`
-    - Domain: <ngrok-host> `third-party=cookie`
+    - Domain: ngrok-host `third-party=cookie`
