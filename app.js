@@ -1,45 +1,39 @@
 const express = require("express");
 var request = require('request');
 
-const app_first = express();
+const app_client = express();
+app_client.use(express.json());
+app_client.use(express.static('client'));
 
-app_first.get('/', function(req, res, next) {
-    request.post({ headers: {'content-type' : 'application/json'}
-                , url: "https://5fc2865cfb8e.ngrok.io", body: '{"name": "hoge"}'}
-                , function(error, response, body){
-    console.log(body);
-    });
-});
-
-app_first.listen(8080, function(){
+app_client.listen(8080, function(){
     console.log("Listening PORT: 8080");
 });
 
-const app_third = express();
 
-app_third.use(express.json())
+const app_server = express();
 
-app_third.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'hoge');
+app_server.use(express.json());
+
+app_server.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    // authorized headers for preflight requests
+    // https://developer.mozilla.org/en-US/docs/Glossary/preflight_request
+    res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Methods', 'POST');
-    res.header('Access-Control-Allow-Credentials', true);
-    next();
-});
-
-app_third.options('*', function (req, res) {
-    res.sendStatus(200);
-});
-
-app_third.post('/', function(req, res) {
-    if (req.is('application/json')) {
-        res.status(201).send(req.body);
-        console.log('POST OK');
+    if ('OPTIONS' === req.method) {
+        res.sendStatus(200)
     } else {
-    const error = new Error('Invalid Content-Type');
-    res.status(400).send({ error: error.message });
+        next()
     }
 });
 
-app_third.listen(8081, function(){
+app_server.post('/', function(req, res) {
+
+    console.log('POST Reserved');
+    console.log(req.body)
+    res.status(201).send({"status": "OK"});
+});
+
+app_server.listen(8081, function(){
     console.log("Listening PORT: 8081");
 });
