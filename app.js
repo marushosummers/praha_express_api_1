@@ -1,27 +1,19 @@
 const express = require("express");
+const cacheControl = require('express-cache-controller');
 
-const app_first = express();
-app_first.use(express.static('first-party', {
-    setHeaders: (res, path, stat) => {
-        res.cookie('first-paty', 'cookie', {
-            httpOnly: true,
-        });
-    },
-}));
-app_first.listen(8080, function(){
+const app_cached = express();
+app_cached.use(express.static('cached-image',{maxAge: '5000'}));
+
+app_cached.listen(8080, function(){
     console.log("Listening PORT: 8080");
 });
 
-const app_third = express();
-app_third.use(express.static('third-party', {
-    setHeaders: (res, path, stat) => {
-        res.cookie('third-paty', 'cookie', {
-            sameSite: 'none',
-            httpOnly: true,
-            secure: true,
-        });
-    },
-}));
-app_third.listen(8081, function(){
+const app_no_cached = express();
+app_no_cached.use(express.static('no-cached-image'));
+app_no_cached.listen(8081, function(){
     console.log("Listening PORT: 8081");
 });
+
+function setCustomCacheControl (res, path) {
+    res.setHeader('Cache-Control', 'no-cache');
+    }
